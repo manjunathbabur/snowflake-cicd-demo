@@ -15,11 +15,12 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/manjunathbabur/snowflake-cicd-demo.git'
             }
         }
-       stage('Install Snowflake Connector') {
+  stage('Install Snowflake Connector') {
     steps {
-        bat 'pip install snowflake-connector-python'
+        bat 'pip install --prefer-binary snowflake-connector-python'
     }
 }
+
 
         stage('Upload Files to Stage') {
             steps {
