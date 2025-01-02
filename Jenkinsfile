@@ -5,6 +5,7 @@ pipeline {
         SNOWSQL_ACCOUNT = 'mg05545.eu-west-1'
         SNOWSQL_USER = 'MRAJAMANI'
         SNOWSQL_ROLE = 'ACCOUNTADMIN'
+         SNOWSQL_PASSWORD = credentials('SNOWSQL_PASSWORD')  // Fetch password from Jenkins credentials
         SNOWSQL_WAREHOUSE = 'POC_ITIM_PERIASAMY'
         SNOWSQL_DATABASE = 'POC_CICD_PROD'
         SNOWSQL_SCHEMA = 'SH_PROD'
@@ -24,8 +25,8 @@ pipeline {
                     ]
                     for (file in files) {
                         bat """
-                            ${env.SNOWSQL_PATH} -a ${env.SNOWSQL_ACCOUNT} -u ${env.SNOWSQL_USER} -r ${env.SNOWSQL_ROLE} -w ${env.SNOWSQL_WAREHOUSE} -d ${env.SNOWSQL_DATABASE} -s ${env.SNOWSQL_SCHEMA} -q \"
-                            PUT 'file://C:/ProgramData/Jenkins/.jenkins/workspace/snowflake_demo/${file.replace('\\', '/')}' @${env.SNOWSQL_STAGE};\"
+                           ${env.SNOWSQL_PATH} -a ${env.SNOWSQL_ACCOUNT} -u ${env.SNOWSQL_USER} -p ${env.SNOWSQL_PASSWORD} -r ${env.SNOWSQL_ROLE} -w ${env.SNOWSQL_WAREHOUSE} -d ${env.SNOWSQL_DATABASE} -s ${env.SNOWSQL_SCHEMA} -q \"
+                        PUT 'file://C:/ProgramData/Jenkins/.jenkins/workspace/snowflake_demo/sql/demo_query.sql' @${env.SNOWSQL_STAGE};\"
                         """
                     }
                 }
