@@ -19,9 +19,10 @@ pipeline {
                             'sql/demo_query.sql'  // Add more files here if needed
                         ]
                         for (file in files) {
-                            writeFile file: 'upload_script.bat', text: """
+                            def command = """
                                 ${env.SNOWSQL_PATH} -a ${env.SNOWSQL_ACCOUNT} -u ${env.SNOWSQL_USER} -p "${SNOWSQL_PASS}" -r ${env.SNOWSQL_ROLE} -w ${env.SNOWSQL_WAREHOUSE} -d ${env.SNOWSQL_DATABASE} -s ${env.SNOWSQL_SCHEMA} -q "PUT 'file://C:/ProgramData/Jenkins/.jenkins/workspace/snowflake_demo/${file.replace('\\', '/')}' @${env.SNOWSQL_STAGE};"
                             """
+                            writeFile file: 'upload_script.bat', text: command
                             bat 'upload_script.bat'
                         }
                     }
