@@ -1,6 +1,7 @@
 pipeline {
     agent any
     environment {
+        SNOWSQL_PATH = '"C:\\Program Files\\Snowflake SnowSQL\\snowsql.exe"'  // Adjust if the path differs
         SNOWSQL_ACCOUNT = 'mg05545.eu-west-1'
         SNOWSQL_USER = 'MRAJAMANI'
         SNOWSQL_ROLE = 'ACCOUNTADMIN'
@@ -12,31 +13,31 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/manjunathbabur/snowflake-cicd-demo.git'
+                git branch: 'main', url: 'https://github.com/manjunathbabur/snowflake-cicd-demo.git' // Replace with your repo URL
             }
         }
-  stage('Install Snowflake Connector') {
-    steps {
-        bat 'pip install --prefer-binary snowflake-connector-python'
-    }
-}
-
-
-        stage('Upload Files to Stage') {
+        stage('Upload SQL Files') {
             steps {
                 script {
-                    bat "snowsql -a %SNOWSQL_ACCOUNT% -u %SNOWSQL_USER% -r %SNOWSQL_ROLE% -w %SNOWSQL_WAREHOUSE% -d %SNOWSQL_DATABASE% -s %SNOWSQL_SCHEMA% -q \"PUT 'file://sql/demo_query.sql' @%SNOWSQL_STAGE%;\""
-                    bat "snowsql -a %SNOWSQL_ACCOUNT% -u %SNOWSQL_USER% -r %SNOWSQL_ROLE% -w %SNOWSQL_WAREHOUSE% -d %SNOWSQL_DATABASE% -s %SNOWSQL_SCHEMA% -q \"PUT 'file://scripts/demo_script.py' @%SNOWSQL_STAGE%;\""
+                    def files = [
+                        'sql/demo_query.sql'  // Add additional files if needed
+                    ]
+                    for (file in files) {
+                        bat """
+                            ${env.SNOWSQL_PATH} -a ${env.SNOWSQL_ACCOUNT} -u ${env.SNOWSQL_USER} -r ${env.SNOWSQL_ROLE} -w ${env.SNOWSQL_WAREHOUSE} -d ${env.SNOWSQL_DATABASE} -s ${env.SNOWSQL_SCHEMA} -q \"
+                            PUT 'file://C:/ProgramData/Jenkins/.jenkins/workspace/snowflake_demo/${file.replace('\\', '/')}' @${env.SNOWSQL_STAGE};\"
+                        """
+                    }
                 }
             }
         }
     }
     post {
         success {
-            echo 'Files successfully uploaded to the stage.'
+            echo 'SQL file(s) successfully uploaded to Snowflake stage.'
         }
         failure {
-            echo 'Deployment failed.'
+            echo 'Failed to upload SQL file(s) to Snowflake stage.'
         }
     }
 }
