@@ -23,8 +23,8 @@ pipeline {
         stage('Upload Files to Stage') {
             steps {
                 script {
-                    bat "snowsql -a %SNOWSQL_ACCOUNT% -u %SNOWSQL_USER% -r %SNOWSQL_ROLE% -w %SNOWSQL_WAREHOUSE% -d %SNOWSQL_DATABASE% -s %SNOWSQL_SCHEMA% -q \"PUT 'file://sql/demo_query.sql' @%SNOWSQL_STAGE%;\""
-                    bat "snowsql -a %SNOWSQL_ACCOUNT% -u %SNOWSQL_USER% -r %SNOWSQL_ROLE% -w %SNOWSQL_WAREHOUSE% -d %SNOWSQL_DATABASE% -s %SNOWSQL_SCHEMA% -q \"PUT 'file://scripts/demo_script.py' @%SNOWSQL_STAGE%;\""
+                    bat "snowsql -a %SNOWSQL_ACCOUNT% -u %SNOWSQL_USER% -r %SNOWSQL_ROLE% -w %SNOWSQL_WAREHOUSE% -d %SNOWSQL_DATABASE% -s %SNOWSQL_SCHEMA% -q \"PUT 'file://%cd%\\sql\\demo_query.sql' @%SNOWSQL_STAGE%;\""
+                    bat "snowsql -a %SNOWSQL_ACCOUNT% -u %SNOWSQL_USER% -r %SNOWSQL_ROLE% -w %SNOWSQL_WAREHOUSE% -d %SNOWSQL_DATABASE% -s %SNOWSQL_SCHEMA% -q \"PUT 'file://%cd%\\scripts\\demo_script.py' @%SNOWSQL_STAGE%;\""
                 }
             }
         }
