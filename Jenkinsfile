@@ -10,6 +10,7 @@ pipeline {
                 script {
                     def files = [
                         'sql/demo_query.sql'  // Add additional files if needed
+                        'scripts/demo_script.py'  // Add additional files if needed
                     ]
                     for (file in files) {
                         bat """
